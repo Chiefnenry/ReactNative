@@ -1,19 +1,24 @@
 import { StyleSheet, Platform, Image } from "react-native";
-
-// import { HelloWave } from "@/src/components/HelloWave";
-import ParallaxScrollView from "@/src/components/ParallaxScrollView";
-import { ThemedText } from "@/src/components/ThemedText";
-import { ThemedView } from "@/src/components/ThemedView";
+import ParallaxScrollView from "@/components/ParallaxScrollView";
+import { ThemedText } from "@/components/ThemedText";
+import { ThemedView } from "@/components/ThemedView";
 import { Colors } from "../constants/Colors";
 import { products } from "../assets/data/products";
+import { Product } from "../types";
 
-// const product = products[0];
+type ProductListItemProps = {
+  product: Product;
+};
 
-const ProductListItem = ({ product }) => {
+const ProductListItem = ({ product }: ProductListItemProps) => {
   return (
     <ParallaxScrollView>
       <ThemedView style={styles.titleContainer}>
-        <Image source={{ url: product.image }} style={styles.image} />
+        <Image
+          source={{ url: product.image }}
+          style={styles.image}
+          resizeMode="contain"
+        />
         <ThemedText style={styles.title}>{product.name}</ThemedText>
         <ThemedText style={styles.price}>${product.price}</ThemedText>
       </ThemedView>
@@ -28,6 +33,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 10,
     borderRadius: 20,
+    flex: 1,
   },
 
   image: {
