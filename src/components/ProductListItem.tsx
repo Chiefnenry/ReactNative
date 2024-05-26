@@ -1,10 +1,11 @@
-import { StyleSheet, Platform, Image } from "react-native";
+import { StyleSheet, Platform, Image, Pressable } from "react-native";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Colors } from "../constants/Colors";
 import { products } from "../assets/data/products";
 import { Product } from "../types";
+import { Link } from "expo-router";
 
 type ProductListItemProps = {
   product: Product;
@@ -12,17 +13,19 @@ type ProductListItemProps = {
 
 const ProductListItem = ({ product }: ProductListItemProps) => {
   return (
-    <ParallaxScrollView>
-      <ThemedView style={styles.titleContainer}>
-        <Image
-          source={{ url: product.image }}
-          style={styles.image}
-          resizeMode="contain"
-        />
-        <ThemedText style={styles.title}>{product.name}</ThemedText>
-        <ThemedText style={styles.price}>${product.price}</ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <Link href={`/menu/${product.id}`} asChild>
+      <Pressable style={styles.titleContainer}>
+        <ParallaxScrollView>
+          <Image
+            source={{ url: product.image }}
+            style={styles.image}
+            resizeMode="contain"
+          />
+          <ThemedText style={styles.title}>{product.name}</ThemedText>
+          <ThemedText style={styles.price}>${product.price}</ThemedText>
+        </ParallaxScrollView>
+      </Pressable>
+    </Link>
   );
 };
 
