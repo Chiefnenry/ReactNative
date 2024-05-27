@@ -1,20 +1,14 @@
-import { Tabs } from "expo-router";
+import { Link, Tabs } from "expo-router";
 import React from "react";
-
-import { TabBarIcon } from "@/components/navigation/TabBarIcon";
-// import { Colors } from "@/src/constants/Colors";
+import { FontAwesome } from "@expo/vector-icons";
 import { useColorScheme } from "../../hooks/useColorScheme";
-
+import { Colors } from "../../constants/Colors";
+import { Pressable } from "react-native";
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <Tabs
-    // screenOptions={{
-    //   tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-    //   headerShown: false,
-    // }}
-    >
+    <Tabs>
       <Tabs.Screen name="index" options={{ href: null }} />
 
       <Tabs.Screen
@@ -23,10 +17,7 @@ export default function TabLayout() {
           title: "Menu",
           headerShown: false,
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "home" : "home-outline"}
-              color={color}
-            />
+            <FontAwesome name="cutlery" size={24} color={color} />
           ),
         }}
       />
@@ -35,7 +26,11 @@ export default function TabLayout() {
         options={{
           title: "Orders",
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? "list" : "list"} color={color} />
+            <FontAwesome
+              name={focused ? "list" : "list"}
+              size={24}
+              color={color}
+            />
           ),
         }}
       />
