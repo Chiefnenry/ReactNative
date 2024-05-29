@@ -7,6 +7,8 @@ import { products } from "../assets/data/products";
 import { Product } from "../types";
 import { Link, useSegments } from "expo-router";
 
+export const defaultPizzaImage =
+  "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png";
 type ProductListItemProps = {
   product: Product;
 };
@@ -19,7 +21,7 @@ const ProductListItem = ({ product }: ProductListItemProps) => {
       <Pressable style={styles.titleContainer}>
         <ParallaxScrollView>
           <Image
-            source={{ uri: product.image }}
+            source={{ uri: product.image || defaultPizzaImage }}
             style={styles.image}
             resizeMode="contain"
           />
