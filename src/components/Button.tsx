@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Colors } from "../constants/Colors";
 import { forwardRef } from "react";
+import { ThemedText } from "./ThemedText";
 
 type ButtonProps = {
   text: string;
@@ -10,7 +11,7 @@ const Button = forwardRef<View | null, ButtonProps>(
   ({ text, ...pressableProps }, ref) => {
     return (
       <Pressable ref={ref} {...pressableProps} style={styles.container}>
-        <Text style={styles.text}>{text}</Text>
+        <ThemedText style={styles.text}>{text}</ThemedText>
       </Pressable>
     );
   }
