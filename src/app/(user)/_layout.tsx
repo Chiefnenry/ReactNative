@@ -4,6 +4,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { useColorScheme } from "../../hooks/useColorScheme";
 import { Colors } from "../../constants/Colors";
 import { Pressable } from "react-native";
+
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 

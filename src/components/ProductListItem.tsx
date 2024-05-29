@@ -5,19 +5,21 @@ import { ThemedView } from "@/components/ThemedView";
 import { Colors } from "../constants/Colors";
 import { products } from "../assets/data/products";
 import { Product } from "../types";
-import { Link } from "expo-router";
+import { Link, useSegments } from "expo-router";
 
 type ProductListItemProps = {
   product: Product;
 };
 
 const ProductListItem = ({ product }: ProductListItemProps) => {
+  const segments = useSegments();
+
   return (
-    <Link href={`/menu/${product.id}`} asChild>
+    <Link href={`/${segments[0]}/menu/${product.id}`} asChild>
       <Pressable style={styles.titleContainer}>
         <ParallaxScrollView>
           <Image
-            source={{ url: product.image }}
+            source={{ uri: product.image }}
             style={styles.image}
             resizeMode="contain"
           />
