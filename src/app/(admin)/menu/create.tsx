@@ -1,19 +1,22 @@
-import { StyleSheet, TextInput, View } from "react-native";
+import { StyleSheet, TextInput, Image, Alert } from "react-native";
 import React, { useState } from "react";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
 import Button from "@/components/Button";
 import { defaultPizzaImage } from "@/components/ProductListItem";
-import { Image } from "react-native";
 import { Colors } from "../../../constants/Colors";
 import * as ImagePicker from "expo-image-picker";
-import { Stack } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 
 const CreateProductScreen = () => {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [errors, setErrors] = useState("");
   const [image, setImage] = useState<string | null>(null);
+
+  const { id } = useLocalSearchParams();
+  const isUpdating = !!id;
+
   const resetFields = () => {
     setName("");
     setPrice("");
@@ -36,15 +39,30 @@ const CreateProductScreen = () => {
     return true;
   };
 
+  const onsubmit = () => {
+    if (isUpdating) {
+      // update
+      onUpdateCreate();
+    } else {
+      onCreate();
+    }
+  };
+
+  const onUpdateCreate = () => {
+    if (!validateInput()) {
+      return;
+    }
+    console.warn("Updating product: ", name);
+    // Save in the database
+    resetFields();
+  };
+
   const onCreate = () => {
     if (!validateInput()) {
       return;
     }
-
     console.warn("Creating product: ", name);
-
     // Save in the database
-
     resetFields();
   };
 
@@ -64,18 +82,33 @@ const CreateProductScreen = () => {
     }
   };
 
+  const onDelete = () => {
+    console.warn("DELETE!!!!!!!");
+  };
+  const confrimDelete = () => {
+    Alert.alert("Confirm", "Are you sure you want to delete this product", [
+      {
+        text: "Cancel",
+      },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: onDelete,
+      },
+    ]);
+  };
   return (
     <ThemedView style={styles.container}>
-      <Stack.Screen options={{ title: "Creating Product" }} />
+      <Stack.Screen
+        options={{ title: isUpdating ? "Update Product" : "Creating Product" }}
+      />
       <Image
         source={{ uri: image || defaultPizzaImage }}
         style={styles.image}
       />
-
       <ThemedText onPress={pickImage} style={styles.textButton}>
         Select Image
       </ThemedText>
-
       <ThemedText style={styles.label}>Name</ThemedText>
       <TextInput
         value={name}
@@ -83,7 +116,6 @@ const CreateProductScreen = () => {
         placeholder="Name"
         style={styles.input}
       />
-
       <ThemedText style={styles.label}>Price ($)</ThemedText>
       <TextInput
         value={price}
@@ -95,8 +127,12 @@ const CreateProductScreen = () => {
       {errors ? (
         <ThemedText style={{ color: "red" }}>{errors}</ThemedText>
       ) : null}
-
-      <Button onPress={onCreate} text="Create" />
+      <Button onPress={onsubmit} text={isUpdating ? "Update" : "Create"} />
+      {isUpdating && (
+        <ThemedText onPress={confrimDelete} style={styles.textButton}>
+          Delete
+        </ThemedText>
+      )}
     </ThemedView>
   );
 };

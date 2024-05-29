@@ -28,22 +28,6 @@ export default function MenuStack() {
           ),
         }}
       />
-
-      <Stack.Screen
-        name="[id]"
-        options={{
-          title: "Menu",
-          headerRight: () => (
-            <Link href="/">
-              <FontAwesome
-                name="pencil"
-                size={25}
-                color={Colors[colorScheme ?? "light"].tint}
-              />
-            </Link>
-          ),
-        }}
-      />
     </Stack>
   );
 }
