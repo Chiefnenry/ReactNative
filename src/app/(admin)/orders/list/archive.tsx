@@ -2,7 +2,7 @@
 import React from "react";
 import { FlatList } from "react-native";
 // import { Order } from "../../../types";
-import orders from "../../../assets/data/orders";
+import orders from "../../../../assets/data/orders";
 import OrderItemListItem from "@/components/OrderListItem";
 // import OrderItemListItem from "@/components/OrderListItem";
 
