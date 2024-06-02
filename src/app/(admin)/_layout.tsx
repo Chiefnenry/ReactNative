@@ -29,9 +29,10 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="orders"
         options={{
           title: "Orders",
+          headerShown: false,
           tabBarIcon: ({ color, focused }) => (
             <FontAwesome
               name={focused ? "list" : "list"}

@@ -4,6 +4,7 @@ import { Order } from "../types";
 import relativeTime from "dayjs/plugin/relativeTime";
 import dayjs from "dayjs";
 import { Link, useSegments } from "expo-router";
+import { Colors } from "../constants/Colors";
 
 dayjs.extend(relativeTime);
 
@@ -30,22 +31,25 @@ const OrderListItem = ({ order }: OrderListItemProps) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "white",
+    // backgroundColor: "white",
     padding: 10,
     borderRadius: 10,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    color: Colors.light.tint,
   },
   title: {
     fontWeight: "bold",
     marginVertical: 5,
+    color: Colors.light.tint,
   },
   time: {
     color: "gray",
   },
   status: {
     fontWeight: "500",
+    color: Colors.light.tint,
   },
 });
 

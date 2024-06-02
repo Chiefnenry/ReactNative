@@ -3,26 +3,24 @@ import React, { useState } from "react";
 import Button from "../../components/Button";
 import { Colors } from "../../constants/Colors";
 import { Link, Stack } from "expo-router";
-import { ThemedView } from "@/components/ThemedView";
-import { ThemedText } from "@/components/ThemedText";
 
 const SignInScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   return (
-    <ThemedView style={styles.container}>
+    <View style={styles.container}>
       <Stack.Screen options={{ title: "Sign in" }} />
 
-      <ThemedText style={styles.label}>Email</ThemedText>
+      <Text style={styles.label}>Email</Text>
       <TextInput
         value={email}
         onChangeText={setEmail}
-        placeholder="oluwaizminelinks@gmail.com.com"
+        placeholder="jon@gmail.com"
         style={styles.input}
       />
 
-      <ThemedText style={styles.label}>Password</ThemedText>
+      <Text style={styles.label}>Password</Text>
       <TextInput
         value={password}
         onChangeText={setPassword}
@@ -35,7 +33,7 @@ const SignInScreen = () => {
       <Link href="/sign-up" style={styles.textButton}>
         Create an account
       </Link>
-    </ThemedView>
+    </View>
   );
 };
 
