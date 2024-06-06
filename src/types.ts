@@ -1,9 +1,12 @@
-export type Product = {
-  id: number;
-  image?: string | null;
-  name: string;
-  price: number;
-};
+import { Database } from "./database.types";
+
+// Assuming `Product` is defined in `database.types`
+export type Product = Database["public"]["Tables"]["products"]["Row"];
+
+export type Tables<T extends keyof Database["public"]["Tables"]> =
+  Database["public"]["Tables"][T]["Row"];
+export type Enums<T extends keyof Database["public"]["Enums"]> =
+  Database["public"]["Enums"][T];
 
 export type PizzaSize = "S" | "M" | "L" | "XL";
 
@@ -37,7 +40,7 @@ export type Order = {
 export type OrderItem = {
   id: number;
   product_id: number;
-  products: Product;
+  product: Product; // Make sure this refers to Product and not products
   order_id: number;
   size: PizzaSize;
   quantity: number;

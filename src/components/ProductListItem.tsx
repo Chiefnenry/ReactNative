@@ -4,13 +4,14 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Colors } from "../constants/Colors";
 import { products } from "../assets/data/products";
-import { Product } from "../types";
+// import { Product } from "../types";
 import { Link, useSegments } from "expo-router";
+import { Tables } from "../types";
 
 export const defaultPizzaImage =
   "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png";
 type ProductListItemProps = {
-  product: Product;
+  product: Tables<"products">;
 };
 
 const ProductListItem = ({ product }: ProductListItemProps) => {
