@@ -1,5 +1,5 @@
 import { StyleSheet, TextInput, Image, Alert } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
 import Button from "@/components/Button";
@@ -7,6 +7,13 @@ import { defaultPizzaImage } from "@/components/ProductListItem";
 import { Colors } from "../../../constants/Colors";
 import * as ImagePicker from "expo-image-picker";
 import { Stack, useLocalSearchParams } from "expo-router";
+import {
+  useDeleteProduct,
+  useInsertProduct,
+  useProduct,
+  useUpdateProduct,
+} from "../../../api/products";
+import { useRouter } from "expo-router";
 
 const CreateProductScreen = () => {
   const [name, setName] = useState("");
@@ -14,8 +21,25 @@ const CreateProductScreen = () => {
   const [errors, setErrors] = useState("");
   const [image, setImage] = useState<string | null>(null);
 
-  const { id } = useLocalSearchParams();
+  const { id: idString } = useLocalSearchParams();
+  const id = idString ? parseFloat(idString as string) : null;
+
   const isUpdating = !!id;
+
+  const { mutate: insertProduct } = useInsertProduct();
+  const { mutate: updateProduct } = useUpdateProduct();
+  const { data: updatingProduct } = useProduct(id!);
+  const { mutate: deleteProduct } = useDeleteProduct();
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (updatingProduct) {
+      setName(updatingProduct.name);
+      setPrice(updatingProduct.price.toString());
+      setImage(updatingProduct.image);
+    }
+  }, [updatingProduct]);
 
   const resetFields = () => {
     setName("");
@@ -39,22 +63,12 @@ const CreateProductScreen = () => {
     return true;
   };
 
-  const onsubmit = () => {
+  const onSubmit = () => {
     if (isUpdating) {
-      // update
-      onUpdateCreate();
+      onUpdate();
     } else {
       onCreate();
     }
-  };
-
-  const onUpdateCreate = () => {
-    if (!validateInput()) {
-      return;
-    }
-    console.warn("Updating product: ", name);
-    // Save in the database
-    resetFields();
   };
 
   const onCreate = () => {
@@ -62,8 +76,32 @@ const CreateProductScreen = () => {
       return;
     }
     console.warn("Creating product: ", name);
-    // Save in the database
-    resetFields();
+
+    insertProduct(
+      { name, price: parseFloat(price), image },
+      {
+        onSuccess: () => {
+          resetFields();
+          router.back();
+        },
+      }
+    );
+  };
+
+  const onUpdate = () => {
+    if (!validateInput()) {
+      return;
+    }
+
+    updateProduct(
+      { id, name, price: parseFloat(price), image },
+      {
+        onSuccess: () => {
+          resetFields();
+          router.back();
+        },
+      }
+    );
   };
 
   const pickImage = async () => {
@@ -83,10 +121,16 @@ const CreateProductScreen = () => {
   };
 
   const onDelete = () => {
-    console.warn("DELETE!!!!!!!");
+    deleteProduct(id!, {
+      onSuccess: () => {
+        resetFields();
+        router.replace("/(admin)");
+      },
+    });
   };
-  const confrimDelete = () => {
-    Alert.alert("Confirm", "Are you sure you want to delete this product", [
+
+  const confirmDelete = () => {
+    Alert.alert("Confirm", "Are you sure you want to delete this product?", [
       {
         text: "Cancel",
       },
@@ -97,6 +141,7 @@ const CreateProductScreen = () => {
       },
     ]);
   };
+
   return (
     <ThemedView style={styles.container}>
       <Stack.Screen
@@ -127,9 +172,9 @@ const CreateProductScreen = () => {
       {errors ? (
         <ThemedText style={{ color: "red" }}>{errors}</ThemedText>
       ) : null}
-      <Button onPress={onsubmit} text={isUpdating ? "Update" : "Create"} />
+      <Button onPress={onSubmit} text={isUpdating ? "Update" : "Create"} />
       {isUpdating && (
-        <ThemedText onPress={confrimDelete} style={styles.textButton}>
+        <ThemedText onPress={confirmDelete} style={styles.textButton}>
           Delete
         </ThemedText>
       )}
@@ -154,13 +199,11 @@ const styles = StyleSheet.create({
     color: "gray",
     fontSize: 16,
   },
-
   image: {
     width: "50%",
     aspectRatio: 1,
     alignSelf: "center",
   },
-
   textButton: {
     alignSelf: "center",
     fontWeight: "bold",

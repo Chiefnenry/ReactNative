@@ -1,28 +1,26 @@
-import { StyleSheet, Image, Pressable } from "react-native";
+import { StyleSheet, Image, Pressable, ActivityIndicator } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import React from "react";
+import React, { useState } from "react";
 import { Colors } from "../../../constants/Colors";
-import products from "../../../assets/data/products";
-import { useState } from "react";
-// import { getBackgroundColorAsync } from "expo-system-ui";
 import Button from "@/components/Button";
 import { useCart } from "../../../provider/CartProvider";
 import { PizzaSize } from "../../../types";
-// import { useRouter } from "expo-router";
+import { useProduct } from "../../../api/products";
 
 const sizes: PizzaSize[] = ["S", "M", "L", "XL"];
 
-const PoductDetailsScreen = () => {
-  const { id } = useLocalSearchParams();
+const ProductDetailsScreen = () => {
+  const { id: idString } = useLocalSearchParams();
+  const id = idString ? parseFloat(idString as string) : null;
+
+  // Ensure id is a valid number before using it
+  const { data: product, error, isLoading } = useProduct(id ?? 0);
+
   const { addItem } = useCart();
-
   const router = useRouter();
-
   const [selectedSize, setSelectedSize] = useState<PizzaSize>("M");
-
-  const product = products.find((p) => p.id.toString() === id);
 
   const addToCart = () => {
     if (!product) {
@@ -31,9 +29,19 @@ const PoductDetailsScreen = () => {
     addItem(product, selectedSize);
     router.push("/cart");
   };
+
+  if (isLoading) {
+    return <ActivityIndicator />;
+  }
+
+  if (error) {
+    return <ThemedText>Failed to fetch products</ThemedText>;
+  }
+
   if (!product) {
     return <ThemedText>Product not found</ThemedText>;
   }
+
   return (
     <ThemedView style={styles.container}>
       <Stack.Screen options={{ title: product?.name }} />
@@ -90,20 +98,17 @@ const styles = StyleSheet.create({
     color: Colors.light.tint,
     marginTop: "auto",
   },
-
   select: {
     color: Colors.light.tint,
     fontSize: 18,
     fontWeight: "bold",
   },
-
   sizes: {
     flexDirection: "row",
     justifyContent: "space-around",
     backgroundColor: "white",
     marginVertical: 10,
   },
-
   size: {
     backgroundColor: "gainsboro",
     width: 50,
@@ -112,7 +117,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-
   sizeText: {
     fontSize: 20,
     fontWeight: "500",
@@ -120,4 +124,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PoductDetailsScreen;
+export default ProductDetailsScreen;
