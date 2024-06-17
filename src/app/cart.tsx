@@ -10,7 +10,7 @@ import CartListItem from "@/components/CartListItem";
 // import { getBackgroundColorAsync } from "expo-system-ui";
 
 const CartScreen = () => {
-  const { items, total } = useCart();
+  const { items, total, checkout } = useCart();
   return (
     <ThemedView style={styles.container}>
       <FlatList
@@ -25,7 +25,7 @@ const CartScreen = () => {
         Total: ${total}
       </ThemedText>
 
-      <Button text="checkout" />
+      <Button onPress={checkout} text="checkout" />
     </ThemedView>
   );
 };

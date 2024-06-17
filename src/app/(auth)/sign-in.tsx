@@ -1,9 +1,11 @@
-import { View, Text, TextInput, StyleSheet, Alert } from "react-native";
+import { TextInput, StyleSheet, Alert } from "react-native";
 import React, { useState } from "react";
 import Button from "../../components/Button";
 import { Colors } from "../../constants/Colors";
 import { Link, Stack } from "expo-router";
 import { supabase } from "../../lib/supabase";
+import { ThemedText } from "@/components/ThemedText";
+import { ThemedView } from "@/components/ThemedView";
 
 const SignInScreen = () => {
   const [email, setEmail] = useState("");
@@ -22,10 +24,10 @@ const SignInScreen = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <ThemedView style={styles.container}>
       <Stack.Screen options={{ title: "Sign in" }} />
 
-      <Text style={styles.label}>Email</Text>
+      <ThemedText style={styles.label}>Email</ThemedText>
       <TextInput
         value={email}
         onChangeText={setEmail}
@@ -33,7 +35,7 @@ const SignInScreen = () => {
         style={styles.input}
       />
 
-      <Text style={styles.label}>Password</Text>
+      <ThemedText style={styles.label}>Password</ThemedText>
       <TextInput
         value={password}
         onChangeText={setPassword}
@@ -50,7 +52,7 @@ const SignInScreen = () => {
       <Link href="/sign-up" style={styles.textButton}>
         Create an account
       </Link>
-    </View>
+    </ThemedView>
   );
 };
 

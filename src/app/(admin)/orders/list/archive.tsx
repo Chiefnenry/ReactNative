@@ -1,12 +1,25 @@
 // OrderScreen.tsx
 import React from "react";
-import { FlatList } from "react-native";
-// import { Order } from "../../../types";
-import orders from "../../../../assets/data/orders";
+import { ActivityIndicator, FlatList } from "react-native";
 import OrderItemListItem from "@/components/OrderListItem";
-// import OrderItemListItem from "@/components/OrderListItem";
+import { useAdminOrderList } from "../../../../api/orders";
+import { ThemedText } from "@/components/ThemedText";
 
 const OrderScreen: React.FC = () => {
+  const {
+    data: orders,
+    isLoading,
+    error,
+  } = useAdminOrderList({ archived: true });
+
+  if (isLoading) {
+    return <ActivityIndicator />;
+  }
+
+  if (error) {
+    return <ThemedText>Failed to fetch</ThemedText>;
+  }
+
   return (
     <FlatList
       data={orders}

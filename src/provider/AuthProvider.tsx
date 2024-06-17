@@ -1,6 +1,6 @@
 import { Session } from "@supabase/supabase-js";
 import { supabase } from "../../src/lib/supabase";
-import {
+import React, {
   PropsWithChildren,
   createContext,
   useContext,
@@ -35,14 +35,15 @@ export default function AuthProvider({ children }: PropsWithChildren) {
   useEffect(() => {
     const fetchSession = async () => {
       try {
+        console.log("Fetching session...");
         const {
           data: { session },
         } = await supabase.auth.getSession();
-
         setSession(session);
+        // console.log("Fetched session:", session);
 
         if (session) {
-          // fetch profile
+          // console.log("Session found, fetching profile...");
           const { data, error } = await supabase
             .from("profiles")
             .select("*")
@@ -50,20 +51,31 @@ export default function AuthProvider({ children }: PropsWithChildren) {
             .single();
           if (error) throw error;
           setProfile(data || null);
+          // console.log("Fetched profile:", data);
+        } else {
+          // console.log("No session found.");
         }
       } catch (error) {
-        console.error("Error fetching session or profile:", error);
+        // console.error("Error fetching session or profile:", error);
       } finally {
         setLoading(false);
+        // console.log("Loading set to false");
       }
     };
 
     fetchSession();
+
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
+        // console.log("Auth state changed, new session:", session);
         setSession(session);
+
         if (session) {
           try {
+            console
+              .log
+              // "Session found on auth state change, fetching profile..."
+              ();
             const { data, error } = await supabase
               .from("profiles")
               .select("*")
@@ -71,14 +83,16 @@ export default function AuthProvider({ children }: PropsWithChildren) {
               .single();
             if (error) throw error;
             setProfile(data || null);
+            // console.log("Fetched profile on auth state change:", data);
           } catch (error) {
             console.error(
-              "Error fetching profile on auth state change:",
+              // "Error fetching profile on auth state change:",
               error
             );
           }
         } else {
           setProfile(null);
+          // console.log("Profile set to null on auth state change");
         }
       }
     );
@@ -88,7 +102,6 @@ export default function AuthProvider({ children }: PropsWithChildren) {
       authListener.subscription.unsubscribe();
     };
   }, []);
-
   return (
     <AuthContext.Provider
       value={{ session, loading, profile, isAdmin: profile?.group === "ADMIN" }}

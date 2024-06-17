@@ -7,6 +7,7 @@ import { products } from "../assets/data/products";
 // import { Product } from "../types";
 import { Link, useSegments } from "expo-router";
 import { Tables } from "../types";
+import RemoteImage from "@/components/RemoteImage";
 
 export const defaultPizzaImage =
   "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png";
@@ -20,15 +21,14 @@ const ProductListItem = ({ product }: ProductListItemProps) => {
   return (
     <Link href={`/${segments[0]}/menu/${product.id}`} asChild>
       <Pressable style={styles.titleContainer}>
-        <ParallaxScrollView>
-          <Image
-            source={{ uri: product.image || defaultPizzaImage }}
-            style={styles.image}
-            resizeMode="contain"
-          />
-          <ThemedText style={styles.title}>{product.name}</ThemedText>
-          <ThemedText style={styles.price}>${product.price}</ThemedText>
-        </ParallaxScrollView>
+        <RemoteImage
+          path={product?.image}
+          fallback={defaultPizzaImage}
+          style={styles.image}
+          resizeMode="contain"
+        />
+        <ThemedText style={styles.title}>{product.name}</ThemedText>
+        <ThemedText style={styles.price}>${product.price}</ThemedText>
       </Pressable>
     </Link>
   );

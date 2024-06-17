@@ -10,6 +10,8 @@ import { PizzaSize } from "../../../types";
 import { FontAwesome } from "@expo/vector-icons";
 import { Link, Stack } from "expo-router";
 import { useProduct } from "../../../api/products";
+import RemoteImage from "@/components/RemoteImage";
+import { defaultPizzaImage } from "@/components/ProductListItem";
 
 const sizes: PizzaSize[] = ["S", "M", "L", "XL"];
 
@@ -58,7 +60,11 @@ const ProductDetailsScreen = () => {
       />
 
       <ThemedText style={styles.title}>{product.name}</ThemedText>
-      <Image source={{ uri: product.image }} style={styles.image} />
+      <RemoteImage
+        path={product?.image}
+        fallback={defaultPizzaImage}
+        style={styles.image}
+      />
 
       <ThemedText style={styles.price}>${product.price}</ThemedText>
       <Button text="Add to Cart" onPress={addToCart} />
