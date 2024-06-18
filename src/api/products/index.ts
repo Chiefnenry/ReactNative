@@ -1,5 +1,4 @@
 import { useQueryClient } from "@tanstack/react-query";
-// import { useProductList } from './index';
 import { supabase } from "../../lib/supabase";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
