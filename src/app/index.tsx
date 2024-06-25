@@ -13,7 +13,7 @@ const Index = () => {
 
   // Debug logs to understand state changes
   // console.log("Loading:", loading);
-  // console.log("Session:", session);
+  //   console.log("Session:", session);
   // console.log("Profile:", profile);
   // console.log("Is Admin:", isAdmin);
 

@@ -7,7 +7,8 @@
       "@/": ["src/*"],
       "@/components/*": ["src/components/*"],
       "@assets/*": ["assets/*"]
-    }
+    },
+    "allowImportingTsExtensions": true // Add this line if not already present
   },
   "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
 }
