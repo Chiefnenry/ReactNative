@@ -13,6 +13,7 @@ import CartProvider from "../provider/CartProvider";
 import AuthProvider from "../provider/AuthProvider";
 import { useColorScheme } from "../hooks/useColorScheme";
 import { StripeProvider } from "@stripe/stripe-react-native";
+import NotificationProvider from "../provider/NotificationProvider";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -40,14 +41,28 @@ export default function RootLayout() {
       >
         <AuthProvider>
           <QueryProvider>
-            <CartProvider>
-              <Stack>
-                <Stack.Screen name="(admin)" options={{ headerShown: false }} />
-                <Stack.Screen name="(user)" options={{ headerShown: false }} />
-                <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-                <Stack.Screen name="cart" options={{ presentation: "modal" }} />
-              </Stack>
-            </CartProvider>
+            <NotificationProvider>
+              <CartProvider>
+                <Stack>
+                  <Stack.Screen
+                    name="(admin)"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="(user)"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="(auth)"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="cart"
+                    options={{ presentation: "modal" }}
+                  />
+                </Stack>
+              </CartProvider>
+            </NotificationProvider>
           </QueryProvider>
         </AuthProvider>
       </StripeProvider>
