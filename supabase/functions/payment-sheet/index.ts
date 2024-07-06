@@ -1,67 +1,53 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { stripe } from "./_utils/stripe.ts"; // Ensure this path is correct
+import { stripe } from "./_utils/stripe.ts";
+import { createOrRetrieveProfile } from "./_utils/supabase.ts";
 
-// Initialize Stripe with your secret key (in your utils file)
-// export const stripe = Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", {
-//   httpClient: Stripe.createFetchHttpClient(),
-// });
+console.log("Server started: Listening for requests...");
 
-console.log("Hello from Functions!");
-
-serve(async (req) => {
-  // Handle CORS preflight request
-  if (req.method === "OPTIONS") {
-    return new Response(null, {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization",
-      },
-      status: 204,
-    });
-  }
+serve(async (req: Request) => {
+  console.log("Received a request:", req);
 
   try {
-    const { amount, currency } = await req.json();
+    const { amount } = await req.json();
+    console.log("Request JSON parsed:", { amount });
 
-    // Create a PaymentIntent so that the SDK can charge the logged-in customer.
+    const customer = await createOrRetrieveProfile(req);
+    console.log("Customer retrieved or created:", customer);
+
+    // Create an ephermeralKey so that the Stripe SDK can fetch the customer's stored payment methods.
+    const ephemeralKey = await stripe.ephemeralKeys.create(
+      { customer: customer },
+      { apiVersion: "2020-08-27" }
+    );
+
+    // Create a PaymentIntent so that the SDK can charge the logged in customer.
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: amount,
-      currency: currency,
-      // customer: customer, // Add customer if needed
+      amount: 1099,
+      currency: "usd",
+      customer: customer,
+      // ephemeralKey: ephemeralKey.secret,
     });
+    console.log("PaymentIntent created:", paymentIntent);
 
     const res = {
       publishableKey: Deno.env.get("EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY"),
       paymentIntent: paymentIntent.client_secret,
-      // ephemeralKey: ephemeralKey.secret,
-      // customer: customer,
+      ephemeralKey: ephemeralKey.secret,
+      customer: customer,
     };
 
+    console.log("Response prepared:", res);
+
     return new Response(JSON.stringify(res), {
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*", // Allow all origins
-      },
+      headers: { "Content-Type": "application/json" },
       status: 200,
     });
   } catch (error) {
+    console.error("Error occurred:", error);
+
     return new Response(JSON.stringify({ error: error.message }), {
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*", // Allow all origins
-      },
+      headers: { "Content-Type": "application/json" },
       status: 400,
     });
   }
 });
-
-//  To invoke locally:
-
-//   1. Run `supabase start` (see: https://supabase.com/docs/reference/cli/supabase-start)
-//   2. Make an HTTP request:
-
-// curl -i --location --request POST 'http://127.0.0.1:54321/functions/v1/payment-sheet' \
-//   --header 'Authorization: Bearer YOUR_SUPABASE_ANON_KEY' \
-//   --header 'Content-Type: application/json' \
-//   --data '{"amount":1000,"currency":"usd"}'

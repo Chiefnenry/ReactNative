@@ -12,6 +12,7 @@ import QueryProvider from "../provider/QueryProvider";
 import CartProvider from "../provider/CartProvider";
 import AuthProvider from "../provider/AuthProvider";
 import { useColorScheme } from "../hooks/useColorScheme";
+import { StripeProvider } from "@stripe/stripe-react-native";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -34,18 +35,22 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <AuthProvider>
-        <QueryProvider>
-          <CartProvider>
-            <Stack>
-              <Stack.Screen name="(admin)" options={{ headerShown: false }} />
-              <Stack.Screen name="(user)" options={{ headerShown: false }} />
-              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-              <Stack.Screen name="cart" options={{ presentation: "modal" }} />
-            </Stack>
-          </CartProvider>
-        </QueryProvider>
-      </AuthProvider>
+      <StripeProvider
+        publishableKey={process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY || ""}
+      >
+        <AuthProvider>
+          <QueryProvider>
+            <CartProvider>
+              <Stack>
+                <Stack.Screen name="(admin)" options={{ headerShown: false }} />
+                <Stack.Screen name="(user)" options={{ headerShown: false }} />
+                <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+                <Stack.Screen name="cart" options={{ presentation: "modal" }} />
+              </Stack>
+            </CartProvider>
+          </QueryProvider>
+        </AuthProvider>
+      </StripeProvider>
     </ThemeProvider>
   );
 }
